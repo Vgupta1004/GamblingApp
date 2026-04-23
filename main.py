@@ -22,96 +22,32 @@ if __name__ == "__main__":
     TableCreator.create_table(StakeTransaction)
     TableCreator.create_table(Bet)
 
-
-    # res = ProfileService.create_gambler(
-    #     name="Angelina",
-    #     initial_stake=1000,
-    #     win_threshold=2000,
-    #     loss_threshold=500,
-    #     min_bet=50,
-    #     max_bet=500
-    # )
-
-    # gid = res["id"]
-    # print(res)
-
-    # print(ProfileService.update_gambler(gid, name="UpdatedName", max_bet=800))
-
-    # print(ProfileService.get_gambler(gid))
-
-    # print(ProfileService.validate_gambler(gid))
-
-    # print(ProfileService.reset_gambler(gid))
-
-    # StakeService.initialize_stake(gid)
-
-    # print(StakeService.place_bet(gid, 100))
-
-    # print(StakeService.settle_bet(gid, 200, True))
-
-    # print(StakeService.place_bet(gid, 1000))
-
-    # print(StakeService.settle_bet(gid, 0, False))
-
-    # print(StakeService.get_stake_analysis())
-
-    # # deposit
-    # print(StakeService.deposit(gid, 500))
-
-    # # withdraw
-    # print(StakeService.withdraw(gid, 200))
-
-    # # full report
-    # report = StakeService.generate_report(gid)
-    # print(report)
-
-    # # filtered report
-
-    # print(StakeService.generate_filtered_report(gid, "BET_WIN"))
-
     gid = 1
     ProfileService.reset_gambler(gid)
-    # print(BettingService.place_bet(gid, 100, 0.5))
-    # print(BettingService.place_bet(gid, 200, 0.3))
-    # print(BettingService.place_bet(gid, 50, 0.7))
-
-    # print("--- Individual Bets ---")
-    # # Fixed strategy
-    # fixed = FixedAmountStrategy(100)
-    # print("1. Fixed:", BettingService.place_bet_with_strategy(gid, fixed, 0.5))
-
-    # # Percentage strategy
-    # percent = PercentageStrategy(0.1)
-    # print("2. Percentage:", BettingService.place_bet_with_strategy(gid, percent, 0.5))
-
-    # # Martingale strategy
-    # martingale = MartingaleStrategy(50)
-    # for i in range(3):
-    #     print(f"{3+i}. Martingale:", BettingService.place_bet_with_strategy(gid, martingale, 0.5))
-
-    # print("\n--- Starting 5 Consecutive Bets (Silently) ---")
-    # martingale = MartingaleStrategy(50)
-
-    # summary = BettingService.place_consecutive_bets(
-    #     gid,
-    #     martingale,
-    #     num_bets=5,
-    #     win_probability=0.5
-    # )
-
-    # print(summary)
 
     # start session
     session = GameSessionManager.start_new_session(gid, upper=1500, lower=500)
 
     strategy = FixedAmountStrategy(100)
 
-    # simulate games
-    while session.is_active():
-
+    # play 2 games
+    for _ in range(2):
         result = BettingService.place_bet_with_strategy(gid, strategy, 0.5)
-
         session.update_after_game(result["balance"])
 
-    # final summary
+    # pause
+    session.pause("break")
+
+    import time
+    time.sleep(2)
+
+    # resume
+    session.resume()
+
+    # continue
+    while session.is_active():
+        result = BettingService.place_bet_with_strategy(gid, strategy, 0.5)
+        session.update_after_game(result["balance"])
+
     print(session.get_summary())
+    

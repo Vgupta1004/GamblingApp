@@ -1,6 +1,6 @@
 from datetime import datetime
 from model.session_enums import SessionStatus, SessionEndReason
-
+from model.pause_record import PauseRecord
 
 class GamingSession:
 
@@ -19,6 +19,10 @@ class GamingSession:
         self.end_time = None
 
         self.games_played = 0
+
+        self.pause_records = []
+        self.current_pause = None
+        self.total_pause_time = 0
 
     def start(self):
         self.status = SessionStatus.ACTIVE
@@ -47,12 +51,45 @@ class GamingSession:
     def is_active(self):
         return self.status == SessionStatus.ACTIVE
 
-    def get_summary(self):
+    def get_summary(self):  
         return {
             "status": self.status.value,
             "end_reason": self.end_reason.value if self.end_reason else None,
             "games_played": self.games_played,
-            "start_time": self.start_time,
-            "end_time": self.end_time,
-            "final_stake": self.current_stake
+            "final_stake": self.current_stake,
+
+            "total_duration": self.get_total_duration(),
+            "pause_time": self.total_pause_time,
+            "active_play_time": self.get_active_play_time(),
+
+            "total_pauses": len(self.pause_records)
         }
+    
+    def pause(self, reason="USER"):
+        if self.status != SessionStatus.ACTIVE:
+            raise Exception("Session not active")
+
+        self.status = SessionStatus.PAUSED
+
+        self.current_pause = PauseRecord(reason)
+        self.pause_records.append(self.current_pause)
+
+    def resume(self):
+        if self.status != SessionStatus.PAUSED:
+            raise Exception("Session not paused")
+
+        self.current_pause.resume()
+
+        self.total_pause_time += self.current_pause.get_duration()
+
+        self.current_pause = None
+        self.status = SessionStatus.ACTIVE
+
+    def get_total_duration(self):
+        if not self.end_time:
+            return 0
+
+        return (self.end_time - self.start_time).total_seconds()
+    
+    def get_active_play_time(self):
+        return self.get_total_duration() - self.total_pause_time

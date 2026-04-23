@@ -1,21 +1,22 @@
 # GamblingApp
 
-## UC3: Betting Mechanism
+## UC4: Game Session Management
 
-Implements the core betting engine with probability-based outcomes and automated stake updates.
+Implements a complete session lifecycle for gambling with start, pause, resume, and end states.
 
-Supports single bet placement with validation against available balance.
+Supports automatic session termination based on upper (win) and lower (loss) stake limits.
 
-Determines win/loss using configurable probabilities and calculates winnings via odds.
+Tracks real-time gameplay with continuous boundary validation after each bet.
 
-Integrates with StakeService to handle deductions and settlements.
+Includes pause/resume functionality with full pause history and duration tracking.
 
-Implements multiple betting strategies (Fixed, Percentage, Martingale).
+Separates total session time into active play time and paused time.
 
-Supports consecutive bets through session-based execution.
+Records each game using GameRecord for detailed audit and analysis.
 
-Tracks each bet with full details including amount, outcome, and balance changes.
+Provides session-level statistics including total profit, win rate, average bet, and ROI.
 
-Provides session summaries with win rate, total bets, and profit/loss.
+Manages multiple sessions using GameSessionManager with active and completed session tracking.
 
-Ensures robust error handling for insufficient balance and invalid bets.
+Ensures robust control flow with safe handling of session states and transitions.
+

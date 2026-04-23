@@ -1,6 +1,7 @@
 from datetime import datetime
 from model.session_enums import SessionStatus, SessionEndReason
 from model.pause_record import PauseRecord
+from model.game_record import GameRecord
 
 class GamingSession:
 
@@ -23,6 +24,8 @@ class GamingSession:
         self.pause_records = []
         self.current_pause = None
         self.total_pause_time = 0
+
+        self.game_records = []
 
     def start(self):
         self.status = SessionStatus.ACTIVE
@@ -51,12 +54,18 @@ class GamingSession:
     def is_active(self):
         return self.status == SessionStatus.ACTIVE
 
-    def get_summary(self):  
+    def get_summary(self):
         return {
             "status": self.status.value,
             "end_reason": self.end_reason.value if self.end_reason else None,
+
             "games_played": self.games_played,
             "final_stake": self.current_stake,
+
+            "total_profit": self.get_total_profit(),
+            "win_rate": self.get_win_rate(),
+            "avg_bet": self.get_avg_bet(),
+            "roi": self.get_roi(),
 
             "total_duration": self.get_total_duration(),
             "pause_time": self.total_pause_time,
@@ -93,3 +102,52 @@ class GamingSession:
     
     def get_active_play_time(self):
         return self.get_total_duration() - self.total_pause_time
+    
+    def record_game(self, bet_result):
+        record = GameRecord(bet_result)
+        self.game_records.append(record)
+
+        self.current_stake = bet_result["balance"]
+        self.games_played += 1
+
+        # boundary checks
+        if self.current_stake >= self.params.upper_limit:
+            self.status = SessionStatus.ENDED_WIN
+            self.end_reason = SessionEndReason.UPPER_LIMIT
+            self.end_time = datetime.now()
+
+        elif self.current_stake <= self.params.lower_limit:
+            self.status = SessionStatus.ENDED_LOSS
+            self.end_reason = SessionEndReason.LOWER_LIMIT
+            self.end_time = datetime.now()
+
+        elif self.games_played >= self.params.max_games:
+            self.status = SessionStatus.ENDED_MANUAL
+            self.end_reason = SessionEndReason.MANUAL
+            self.end_time = datetime.now()
+
+    def get_total_profit(self):
+        return sum(r.get_profit() for r in self.game_records)
+
+
+    def get_win_rate(self):
+        if not self.game_records:
+            return 0
+
+        wins = sum(1 for r in self.game_records if r.is_win)
+        return wins / len(self.game_records)
+
+
+    def get_avg_bet(self):
+        if not self.game_records:
+            return 0
+
+        return sum(r.bet_amount for r in self.game_records) / len(self.game_records)
+
+
+    def get_roi(self):
+        total_bet = sum(r.bet_amount for r in self.game_records)
+        if total_bet == 0:
+            return 0
+
+        return self.get_total_profit() / total_bet

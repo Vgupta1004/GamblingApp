@@ -6,6 +6,7 @@ from services.profile_service import ProfileService
 class GameSessionManager:
 
     active_sessions = {}
+    completed_sessions = []
 
     @staticmethod
     def start_new_session(gambler_id, upper, lower):
@@ -43,3 +44,21 @@ class GameSessionManager:
             del GameSessionManager.active_sessions[gambler_id]
 
             return session.get_summary()
+        
+    @staticmethod
+    def end_session(gambler_id):
+
+        session = GameSessionManager.get_session(gambler_id)
+
+        if session:
+            session.end_time = session.end_time or session.start_time
+
+            GameSessionManager.completed_sessions.append(session)
+
+            del GameSessionManager.active_sessions[gambler_id]
+
+            return session.get_summary()
+        
+    @staticmethod
+    def get_all_sessions():
+        return [s.get_summary() for s in GameSessionManager.completed_sessions]

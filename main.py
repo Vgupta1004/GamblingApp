@@ -25,29 +25,17 @@ if __name__ == "__main__":
     gid = 1
     ProfileService.reset_gambler(gid)
 
-    # start session
-    session = GameSessionManager.start_new_session(gid, upper=1500, lower=500)
+    session = GameSessionManager.start_new_session(gid, 1500, 500)
 
     strategy = FixedAmountStrategy(100)
 
-    # play 2 games
-    for _ in range(2):
-        result = BettingService.place_bet_with_strategy(gid, strategy, 0.5)
-        session.update_after_game(result["balance"])
-
-    # pause
-    session.pause("break")
-
-    import time
-    time.sleep(2)
-
-    # resume
-    session.resume()
-
-    # continue
     while session.is_active():
-        result = BettingService.place_bet_with_strategy(gid, strategy, 0.5)
-        session.update_after_game(result["balance"])
 
-    print(session.get_summary())
+        result = BettingService.place_bet_with_strategy(gid, strategy, 0.5)
+
+        session.record_game(result)
+
+    summary = session.get_summary()
+
+    print(summary)
     

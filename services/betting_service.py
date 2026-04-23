@@ -69,3 +69,36 @@ class BettingService:
     @staticmethod
     def determine_outcome(probability):
         return random.random() < probability
+    
+
+    @staticmethod
+    def place_bet_with_strategy(gambler_id, strategy, win_probability):
+
+        conn = get_connection()
+        cursor = get_cursor(conn)
+
+        cursor.execute("SELECT * FROM gamblers WHERE id=%s", (gambler_id,))
+        g = cursor.fetchone()
+
+        if not g:
+            close_all(cursor, conn)
+            raise GamblerNotFound()
+
+        current_stake = g["current_stake"]
+
+        amount = strategy.get_bet_amount(current_stake)
+
+        if amount > current_stake:
+            close_all(cursor, conn)
+            raise Exception("Insufficient balance")
+
+        result = BettingService.place_bet(
+            gambler_id,
+            amount,
+            win_probability
+        )
+
+        if hasattr(strategy, "update_after_result"):
+            strategy.update_after_result(result["is_win"])
+
+        return result

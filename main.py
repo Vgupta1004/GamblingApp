@@ -5,6 +5,11 @@ from model.stake_transaction import StakeTransaction
 from services.stake_service import StakeService
 from model.bet import Bet
 from services.betting_service import BettingService
+from services.betting_service import BettingService
+from strategies.fixed_strategy import FixedAmountStrategy
+from strategies.percentage_strategy import PercentageStrategy
+from strategies.martingale_strategy import MartingaleStrategy
+
 
 if __name__ == "__main__":
 
@@ -60,6 +65,22 @@ if __name__ == "__main__":
     # print(StakeService.generate_filtered_report(gid, "BET_WIN"))
 
     gid = 1
-    print(BettingService.place_bet(gid, 100, 0.5))
-    print(BettingService.place_bet(gid, 200, 0.3))
-    print(BettingService.place_bet(gid, 50, 0.7))
+    # print(BettingService.place_bet(gid, 100, 0.5))
+    # print(BettingService.place_bet(gid, 200, 0.3))
+    # print(BettingService.place_bet(gid, 50, 0.7))
+
+    # Fixed strategy
+    fixed = FixedAmountStrategy(100)
+
+    print(BettingService.place_bet_with_strategy(gid, fixed, 0.5))
+
+    # Percentage strategy
+    percent = PercentageStrategy(0.1)
+
+    print(BettingService.place_bet_with_strategy(gid, percent, 0.5))
+
+    # Martingale strategy
+    martingale = MartingaleStrategy(50)
+
+    for _ in range(3):
+        print(BettingService.place_bet_with_strategy(gid, martingale, 0.5))

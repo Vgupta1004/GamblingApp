@@ -1,10 +1,14 @@
 from services.table_creator import TableCreator
 from model.gambler import Gambler
 from services.profile_service import ProfileService
+from model.stake_transaction import StakeTransaction
+from services.stake_service import StakeService
+
 
 if __name__ == "__main__":
 
     TableCreator.create_table(Gambler)
+    TableCreator.create_table(StakeTransaction)
 
     res = ProfileService.create_gambler(
         name="Angelina",
@@ -25,3 +29,15 @@ if __name__ == "__main__":
     print(ProfileService.validate_gambler(gid))
 
     print(ProfileService.reset_gambler(gid))
+
+    StakeService.initialize_stake(gid)
+
+    print(StakeService.place_bet(gid, 100))
+
+    print(StakeService.settle_bet(gid, 200, True))
+
+    print(StakeService.place_bet(gid, 1000))
+
+    print(StakeService.settle_bet(gid, 0, False))
+
+    print(StakeService.get_stake_analysis())

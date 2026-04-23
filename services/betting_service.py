@@ -90,8 +90,9 @@ class BettingService:
 
         amount = strategy.get_bet_amount(current_stake)
 
+        close_all(cursor, conn)
+
         if amount > current_stake:
-            close_all(cursor, conn)
             raise Exception("Insufficient balance")
 
         result = BettingService.place_bet(

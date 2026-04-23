@@ -11,6 +11,9 @@ from strategies.percentage_strategy import PercentageStrategy
 from strategies.martingale_strategy import MartingaleStrategy
 from strategies.martingale_strategy import MartingaleStrategy
 from services.betting_service import BettingService
+from services.session_manager import GameSessionManager
+from strategies.fixed_strategy import FixedAmountStrategy
+from services.betting_service import BettingService
 
 
 if __name__ == "__main__":
@@ -87,13 +90,28 @@ if __name__ == "__main__":
     #     print(f"{3+i}. Martingale:", BettingService.place_bet_with_strategy(gid, martingale, 0.5))
 
     # print("\n--- Starting 5 Consecutive Bets (Silently) ---")
-    martingale = MartingaleStrategy(50)
+    # martingale = MartingaleStrategy(50)
 
-    summary = BettingService.place_consecutive_bets(
-        gid,
-        martingale,
-        num_bets=5,
-        win_probability=0.5
-    )
+    # summary = BettingService.place_consecutive_bets(
+    #     gid,
+    #     martingale,
+    #     num_bets=5,
+    #     win_probability=0.5
+    # )
 
-    print(summary)
+    # print(summary)
+
+    # start session
+    session = GameSessionManager.start_new_session(gid, upper=1500, lower=500)
+
+    strategy = FixedAmountStrategy(100)
+
+    # simulate games
+    while session.is_active():
+
+        result = BettingService.place_bet_with_strategy(gid, strategy, 0.5)
+
+        session.update_after_game(result["balance"])
+
+    # final summary
+    print(session.get_summary())

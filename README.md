@@ -1,26 +1,21 @@
 # GamblingApp
 
-## UC2: Stake Management Operations
+## UC3: Betting Mechanism
 
-Implements the core betting engine with real-time stake tracking and transaction management.
+Implements the core betting engine with probability-based outcomes and automated stake updates.
 
-Supports stake initialization, bet placement, win/loss settlement, deposits, and withdrawals.
+Supports single bet placement with validation against available balance.
 
-Maintains a complete audit trail using `StakeTransaction` records.
+Determines win/loss using configurable probabilities and calculates winnings via odds.
 
-Includes boundary validation to detect low/high stake breaches and warnings.
+Integrates with StakeService to handle deductions and settlements.
 
-Tracks stake fluctuations using a monitor (peak, lowest, volatility).
+Implements multiple betting strategies (Fixed, Percentage, Martingale).
 
-Provides detailed reporting with transaction breakdown and net profit/loss.
+Supports consecutive bets through session-based execution.
 
-Supports filtered reports by transaction type.
+Tracks each bet with full details including amount, outcome, and balance changes.
 
-Ensures consistent balance updates and state tracking across operations.
+Provides session summaries with win rate, total bets, and profit/loss.
 
-Run using:
-
-```bash
-python main.py
-```
-
+Ensures robust error handling for insufficient balance and invalid bets.

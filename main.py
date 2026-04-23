@@ -72,21 +72,21 @@ if __name__ == "__main__":
     # print(BettingService.place_bet(gid, 200, 0.3))
     # print(BettingService.place_bet(gid, 50, 0.7))
 
-    print("--- Individual Bets ---")
-    # Fixed strategy
-    fixed = FixedAmountStrategy(100)
-    print("1. Fixed:", BettingService.place_bet_with_strategy(gid, fixed, 0.5))
+    # print("--- Individual Bets ---")
+    # # Fixed strategy
+    # fixed = FixedAmountStrategy(100)
+    # print("1. Fixed:", BettingService.place_bet_with_strategy(gid, fixed, 0.5))
 
-    # Percentage strategy
-    percent = PercentageStrategy(0.1)
-    print("2. Percentage:", BettingService.place_bet_with_strategy(gid, percent, 0.5))
+    # # Percentage strategy
+    # percent = PercentageStrategy(0.1)
+    # print("2. Percentage:", BettingService.place_bet_with_strategy(gid, percent, 0.5))
 
-    # Martingale strategy
-    martingale = MartingaleStrategy(50)
-    for i in range(3):
-        print(f"{3+i}. Martingale:", BettingService.place_bet_with_strategy(gid, martingale, 0.5))
+    # # Martingale strategy
+    # martingale = MartingaleStrategy(50)
+    # for i in range(3):
+    #     print(f"{3+i}. Martingale:", BettingService.place_bet_with_strategy(gid, martingale, 0.5))
 
-    print("\n--- Starting 5 Consecutive Bets (Silently) ---")
+    # print("\n--- Starting 5 Consecutive Bets (Silently) ---")
     martingale = MartingaleStrategy(50)
 
     summary = BettingService.place_consecutive_bets(

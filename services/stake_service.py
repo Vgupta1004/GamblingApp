@@ -3,6 +3,7 @@ from enums.transaction_type import TransactionType
 from exceptions.gambler import GamblerNotFound
 from model.stake_monitor import StakeMonitor
 from model.stake_boundary import StakeBoundary
+from dto.stake_report import StakeHistoryReport
 
 monitor = StakeMonitor()
 boundary = StakeBoundary(min_stake=200, max_stake=5000)
@@ -152,3 +153,111 @@ class StakeService:
     @staticmethod
     def get_stake_analysis():
         return monitor.get_summary()
+    
+    @staticmethod
+    def generate_report(gambler_id):
+
+        conn = get_connection()
+        cursor = get_cursor(conn)
+
+        cursor.execute(
+            "SELECT * FROM stake_transactions WHERE gambler_id=%s ORDER BY created_at",
+            (gambler_id,)
+        )
+
+        transactions = cursor.fetchall()
+
+        close_all(cursor, conn)
+
+        report = StakeHistoryReport(transactions)
+
+        return report.to_dict()
+    
+
+    @staticmethod
+    def generate_filtered_report(gambler_id, transaction_type=None):
+
+        conn = get_connection()
+        cursor = get_cursor(conn)
+
+        if transaction_type:
+            query = """
+            SELECT * FROM stake_transactions
+            WHERE gambler_id=%s AND transaction_type=%s
+            ORDER BY created_at
+            """
+            cursor.execute(query, (gambler_id, transaction_type))
+        else:
+            cursor.execute(
+                "SELECT * FROM stake_transactions WHERE gambler_id=%s",
+                (gambler_id,)
+            )
+
+        transactions = cursor.fetchall()
+
+        close_all(cursor, conn)
+
+        return StakeHistoryReport(transactions).to_dict()
+    
+
+    @staticmethod
+    def deposit(gambler_id, amount):
+
+        conn = get_connection()
+        cursor = get_cursor(conn)
+
+        cursor.execute("SELECT * FROM gamblers WHERE id=%s", (gambler_id,))
+        g = cursor.fetchone()
+
+        new_balance = g["current_stake"] + amount
+
+        cursor.execute(
+            "UPDATE gamblers SET current_stake=%s WHERE id=%s",
+            (new_balance, gambler_id)
+        )
+
+        StakeService._create_transaction(
+            cursor,
+            gambler_id,
+            TransactionType.DEPOSIT,
+            amount,
+            new_balance
+        )
+
+        conn.commit()
+        close_all(cursor, conn)
+
+        return {"balance": new_balance}
+    
+
+    @staticmethod
+    def withdraw(gambler_id, amount):
+
+        conn = get_connection()
+        cursor = get_cursor(conn)
+
+        cursor.execute("SELECT * FROM gamblers WHERE id=%s", (gambler_id,))
+        g = cursor.fetchone()
+
+        if amount > g["current_stake"]:
+            raise Exception("Insufficient balance")
+
+        new_balance = g["current_stake"] - amount
+
+        cursor.execute(
+            "UPDATE gamblers SET current_stake=%s WHERE id=%s",
+            (new_balance, gambler_id)
+        )
+
+        StakeService._create_transaction(
+            cursor,
+            gambler_id,
+            TransactionType.WITHDRAWAL,
+            -amount,
+            new_balance
+        )
+
+        conn.commit()
+        close_all(cursor, conn)
+
+        return {"balance": new_balance}

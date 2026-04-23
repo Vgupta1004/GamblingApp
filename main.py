@@ -41,3 +41,16 @@ if __name__ == "__main__":
     print(StakeService.settle_bet(gid, 0, False))
 
     print(StakeService.get_stake_analysis())
+
+    # deposit
+    print(StakeService.deposit(gid, 500))
+
+    # withdraw
+    print(StakeService.withdraw(gid, 200))
+
+    # full report
+    report = StakeService.generate_report(gid)
+    print(report)
+
+    # filtered report
+    print(StakeService.generate_filtered_report(gid, "BET_WIN"))

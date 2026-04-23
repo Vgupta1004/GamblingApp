@@ -1,26 +1,26 @@
 # GamblingApp
 
-## UC1: Gambler Profile Management
+## UC2: Stake Management Operations
 
-Implements core profile management for gamblers including creation, update, retrieval, validation, and reset operations.
+Implements the core betting engine with real-time stake tracking and transaction management.
 
-Each gambler stores financial data (initial/current stake, thresholds) along with betting preferences and statistics.
+Supports stake initialization, bet placement, win/loss settlement, deposits, and withdrawals.
 
-A layered architecture is used:
+Maintains a complete audit trail using `StakeTransaction` records.
 
-* `model` for entities
-* `services` for business logic
-* `dto` for structured outputs
-* `config` for database handling
+Includes boundary validation to detect low/high stake breaches and warnings.
 
-Includes input validation, custom exception handling, and timestamp tracking.
+Tracks stake fluctuations using a monitor (peak, lowest, volatility).
 
-Statistics such as net profit, win rate, and average bet are computed via DTO.
+Provides detailed reporting with transaction breakdown and net profit/loss.
 
-Reset functionality restores initial state with proportional threshold adjustment.
+Supports filtered reports by transaction type.
+
+Ensures consistent balance updates and state tracking across operations.
 
 Run using:
 
 ```bash
 python main.py
 ```
+

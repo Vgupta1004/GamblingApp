@@ -3,6 +3,7 @@ from config.db import get_connection, get_cursor, close_all
 from services.stake_service import StakeService
 from model.bet import Bet
 from exceptions.gambler import GamblerNotFound
+from model.betting_session import BettingSession
 
 
 class BettingService:
@@ -63,6 +64,7 @@ class BettingService:
             "bet_id": bet_id,
             "is_win": is_win,
             "win_amount": win_amount,
+            "bet_amount": amount,
             "balance": stake_after
         }
 
@@ -102,3 +104,25 @@ class BettingService:
             strategy.update_after_result(result["is_win"])
 
         return result
+    
+    @staticmethod
+    def place_consecutive_bets(gambler_id, strategy, num_bets, win_probability):
+
+        session = BettingSession(gambler_id)
+
+        for _ in range(num_bets):
+            try:
+                result = BettingService.place_bet_with_strategy(
+                    gambler_id,
+                    strategy,
+                    win_probability
+                )
+                session.add_bet(result)
+
+            except Exception as e:
+                print("Session stopped:", str(e))
+                break
+
+        session.end_session()
+
+        return session.get_summary()

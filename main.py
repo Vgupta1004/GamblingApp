@@ -9,6 +9,8 @@ from services.betting_service import BettingService
 from strategies.fixed_strategy import FixedAmountStrategy
 from strategies.percentage_strategy import PercentageStrategy
 from strategies.martingale_strategy import MartingaleStrategy
+from strategies.martingale_strategy import MartingaleStrategy
+from services.betting_service import BettingService
 
 
 if __name__ == "__main__":
@@ -65,6 +67,7 @@ if __name__ == "__main__":
     # print(StakeService.generate_filtered_report(gid, "BET_WIN"))
 
     gid = 1
+    ProfileService.reset_gambler(gid)
     # print(BettingService.place_bet(gid, 100, 0.5))
     # print(BettingService.place_bet(gid, 200, 0.3))
     # print(BettingService.place_bet(gid, 50, 0.7))
@@ -84,3 +87,15 @@ if __name__ == "__main__":
 
     for _ in range(3):
         print(BettingService.place_bet_with_strategy(gid, martingale, 0.5))
+
+    
+    martingale = MartingaleStrategy(50)
+
+    summary = BettingService.place_consecutive_bets(
+        gid,
+        martingale,
+        num_bets=5,
+        win_probability=0.5
+    )
+
+    print(summary)

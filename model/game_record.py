@@ -9,6 +9,7 @@ class GameRecord:
         self.win_amount = bet_result["win_amount"]
         self.is_win = bet_result["is_win"]
         self.balance = bet_result["balance"]
+        self.profit = self.win_amount - self.bet_amount
 
         self.timestamp = datetime.now()
 

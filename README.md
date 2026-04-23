@@ -1,22 +1,21 @@
 # GamblingApp
 
-## UC4: Game Session Management
+## UC5: Win/Loss Calculation
 
-Implements a complete session lifecycle for gambling with start, pause, resume, and end states.
+Implements a complete win/loss engine with probability-based outcome determination.
 
-Supports automatic session termination based on upper (win) and lower (loss) stake limits.
+Supports multiple outcome strategies including random and weighted (house edge) simulation.
 
-Tracks real-time gameplay with continuous boundary validation after each bet.
+Provides flexible odds systems: fixed, probability-based, decimal, and American formats.
 
-Includes pause/resume functionality with full pause history and duration tracking.
+Calculates winnings, losses, and stake transitions for every game.
 
-Separates total session time into active play time and paused time.
+Tracks running totals with balance history and net profit calculation.
 
-Records each game using GameRecord for detailed audit and analysis.
+Includes advanced analytics such as win rate, profit factor, and ROI.
 
-Provides session-level statistics including total profit, win rate, average bet, and ROI.
+Implements streak tracking for consecutive wins and losses.
 
-Manages multiple sessions using GameSessionManager with active and completed session tracking.
+Adds risk metrics like maximum drawdown for performance evaluation.
 
-Ensures robust control flow with safe handling of session states and transitions.
-
+Seamlessly integrates with session management for real-time analytics and reporting.

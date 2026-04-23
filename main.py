@@ -14,6 +14,12 @@ from services.betting_service import BettingService
 from services.session_manager import GameSessionManager
 from strategies.fixed_strategy import FixedAmountStrategy
 from services.betting_service import BettingService
+from strategies.outcome.random_strategy import RandomOutcomeStrategy
+from model.odds_config import OddsConfig
+from services.winloss_service import WinLossCalculator
+from strategies.outcome.random_strategy import RandomOutcomeStrategy
+from model.odds_config import OddsConfig
+from services.winloss_service import WinLossCalculator
 
 
 if __name__ == "__main__":
@@ -25,17 +31,17 @@ if __name__ == "__main__":
     gid = 1
     ProfileService.reset_gambler(gid)
 
-    session = GameSessionManager.start_new_session(gid, 1500, 500)
+    strategy = RandomOutcomeStrategy()
+    odds = OddsConfig("FIXED", 2)
 
-    strategy = FixedAmountStrategy(100)
+    result = WinLossCalculator.run_session(
+        initial_stake=1000,
+        bet_amount=100,
+        rounds=10,
+        strategy=strategy,
+        odds=odds,
+        probability=0.5
+    )
 
-    while session.is_active():
-
-        result = BettingService.place_bet_with_strategy(gid, strategy, 0.5)
-
-        session.record_game(result)
-
-    summary = session.get_summary()
-
-    print(summary)
+    print(result)
     

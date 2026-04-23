@@ -55,7 +55,7 @@ class GamingSession:
         return self.status == SessionStatus.ACTIVE
 
     def get_summary(self):
-        return {
+        summary =  {
             "status": self.status.value,
             "end_reason": self.end_reason.value if self.end_reason else None,
 
@@ -73,7 +73,9 @@ class GamingSession:
 
             "total_pauses": len(self.pause_records)
         }
-    
+        summary.update(self.get_advanced_stats())
+        return summary
+        
     def pause(self, reason="USER"):
         if self.status != SessionStatus.ACTIVE:
             raise Exception("Session not active")
@@ -151,3 +153,24 @@ class GamingSession:
             return 0
 
         return self.get_total_profit() / total_bet
+    
+    def get_advanced_stats(self):
+        profits = [r.profit for r in self.game_records]
+
+        total_profit = sum(profits)
+
+        max_drawdown = 0
+        peak = self.game_records[0].balance if self.game_records else 0
+
+        for r in self.game_records:
+
+            if r.balance > peak:
+                peak = r.balance
+
+            drawdown = peak - r.balance
+            max_drawdown = max(max_drawdown, drawdown)
+
+        return {
+            "total_profit": total_profit,
+            "max_drawdown": max_drawdown
+        }

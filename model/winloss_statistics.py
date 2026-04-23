@@ -6,7 +6,7 @@ class WinLossStatistics:
 
         self.wins = 0
         self.losses = 0
-
+        self._results = []
         self.total_winnings = 0
         self.total_losses = 0
 
@@ -43,6 +43,7 @@ class WinLossStatistics:
                 self.longest_loss_streak,
                 self.current_loss_streak
             )
+        self._results.append(game_result)
 
     def get_win_rate(self):
         if self.total_games == 0:
@@ -67,4 +68,7 @@ class WinLossStatistics:
         }
     
     def get_net_profit(self):
-        return self.total_winnings - self.total_losses
+        return sum(
+            (r.win_amount - r.bet_amount)
+            for r in self._results
+        )

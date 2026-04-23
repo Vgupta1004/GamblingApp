@@ -20,6 +20,9 @@ from services.winloss_service import WinLossCalculator
 from strategies.outcome.random_strategy import RandomOutcomeStrategy
 from model.odds_config import OddsConfig
 from services.winloss_service import WinLossCalculator
+from utils.input_validator import InputValidator
+from utils.safe_input_handler import SafeInputHandler
+
 
 
 if __name__ == "__main__":
@@ -44,4 +47,15 @@ if __name__ == "__main__":
     )
 
     print(result)
+
+    print(InputValidator.validate_initial_stake(-10).get_summary())
+    print(InputValidator.validate_bet_amount(500, 100).get_summary())
+    print(InputValidator.validate_probability(1.5).get_summary())
+    print(InputValidator.validate_limits(1000, 500).get_summary())
+
+    stake = SafeInputHandler.get_valid_stake()
+    prob = SafeInputHandler.get_valid_probability()
+
+    print("Valid stake:", stake)
+    print("Valid probability:", prob)
     

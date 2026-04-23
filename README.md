@@ -1,21 +1,21 @@
 # GamblingApp
 
-## UC5: Win/Loss Calculation
+## UC6: Input Validation and Error Handling
 
-Implements a complete win/loss engine with probability-based outcome determination.
+Implements a robust validation layer to ensure all inputs meet defined constraints and rules.
 
-Supports multiple outcome strategies including random and weighted (house edge) simulation.
+Includes a custom exception hierarchy for precise error categorization and handling.
 
-Provides flexible odds systems: fixed, probability-based, decimal, and American formats.
+Validates stake, bet amounts, probability values, and session limits with strict checks.
 
-Calculates winnings, losses, and stake transitions for every game.
+Prevents invalid states such as negative stakes, excessive bets, and incorrect boundaries.
 
-Tracks running totals with balance history and net profit calculation.
+Handles invalid numeric inputs (null, strings, NaN, infinity) safely and gracefully.
 
-Includes advanced analytics such as win rate, profit factor, and ROI.
+Provides a ValidationResult system to collect errors and warnings without crashing execution.
 
-Implements streak tracking for consecutive wins and losses.
+Supports configurable validation rules via a centralized ValidationConfig.
 
-Adds risk metrics like maximum drawdown for performance evaluation.
+Includes SafeInputHandler for interactive input with retry logic and user-friendly feedback.
 
-Seamlessly integrates with session management for real-time analytics and reporting.
+Ensures system reliability by enforcing data integrity across all modules.

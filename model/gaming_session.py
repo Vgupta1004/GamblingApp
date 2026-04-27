@@ -5,8 +5,9 @@ from model.game_record import GameRecord
 
 class GamingSession:
 
-    def __init__(self, gambler_id, initial_stake, params):
+    def __init__(self, gambler_id, initial_stake, params, session_id=None):
 
+        self.session_id = session_id
         self.gambler_id = gambler_id
         self.initial_stake = initial_stake
         self.current_stake = initial_stake
@@ -29,27 +30,8 @@ class GamingSession:
 
     def start(self):
         self.status = SessionStatus.ACTIVE
-        self.start_time = datetime.now()
-
-    def update_after_game(self, new_stake):
-
-        self.current_stake = new_stake
-        self.games_played += 1
-
-        if self.current_stake >= self.params.upper_limit:
-            self.status = SessionStatus.ENDED_WIN
-            self.end_reason = SessionEndReason.UPPER_LIMIT
-            self.end_time = datetime.now()
-
-        elif self.current_stake <= self.params.lower_limit:
-            self.status = SessionStatus.ENDED_LOSS
-            self.end_reason = SessionEndReason.LOWER_LIMIT
-            self.end_time = datetime.now()
-
-        elif self.games_played >= self.params.max_games:
-            self.status = SessionStatus.ENDED_MANUAL
-            self.end_reason = SessionEndReason.MANUAL
-            self.end_time = datetime.now()
+        if not self.start_time:
+            self.start_time = datetime.now()
 
     def is_active(self):
         return self.status == SessionStatus.ACTIVE

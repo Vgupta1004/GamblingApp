@@ -14,7 +14,6 @@ class BettingService:
         conn = get_connection()
         cursor = get_cursor(conn)
 
-        # get gambler
         cursor.execute("SELECT * FROM gamblers WHERE id=%s", (gambler_id,))
         g = cursor.fetchone()
 
@@ -65,7 +64,9 @@ class BettingService:
             "is_win": is_win,
             "win_amount": win_amount,
             "bet_amount": amount,
-            "balance": stake_after
+            "balance": stake_after,
+            "stake_before": stake_before,
+            "stake_after": stake_after
         }
 
     @staticmethod

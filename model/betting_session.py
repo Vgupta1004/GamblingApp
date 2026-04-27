@@ -20,13 +20,11 @@ class BettingSession:
         wins = sum(1 for b in self.bets if b["is_win"] == True)
         losses = total_bets - wins
 
-        # Calculate profit as change in balance if bets exist
-        if total_bets > 0:
-            initial_balance = self.bets[0]["balance"] - (self.bets[0]["win_amount"] - self.bets[0]["bet_amount"])
-            final_balance = self.bets[-1]["balance"]
-            total_profit = final_balance - initial_balance
-        else:
-            total_profit = 0
+        # Calculate profit as sum of stake changes per bet
+        total_profit = sum(
+            b["stake_after"] - b["stake_before"]
+            for b in self.bets
+        ) if total_bets > 0 else 0
 
         win_rate = wins / total_bets if total_bets > 0 else 0
 

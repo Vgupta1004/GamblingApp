@@ -1,21 +1,23 @@
 # GamblingApp
 
-## UC6: Input Validation and Error Handling
+## UC7: User Interaction (CLI Application)
 
-Implements a robust validation layer to ensure all inputs meet defined constraints and rules.
+Implements a complete interactive command-line application for end-to-end user interaction.
 
-Includes a custom exception hierarchy for precise error categorization and handling.
+Supports login for existing gamblers and creation of new profiles with validated inputs.
 
-Validates stake, bet amounts, probability values, and session limits with strict checks.
+Provides a menu-driven interface to navigate all core operations seamlessly.
 
-Prevents invalid states such as negative stakes, excessive bets, and incorrect boundaries.
+Allows users to start sessions, place bets, and run full automated sessions.
 
-Handles invalid numeric inputs (null, strings, NaN, infinity) safely and gracefully.
+Integrates betting strategies with user selection for dynamic gameplay behavior.
 
-Provides a ValidationResult system to collect errors and warnings without crashing execution.
+Displays real-time game outcomes including bet amount, result, and updated stake.
 
-Supports configurable validation rules via a centralized ValidationConfig.
+Tracks and presents comprehensive session summaries with performance metrics.
 
-Includes SafeInputHandler for interactive input with retry logic and user-friendly feedback.
+Ensures all inputs are validated using the UC6 validation layer for reliability.
 
-Ensures system reliability by enforcing data integrity across all modules.
+Maintains a clean separation between UI, services, and business logic.
+
+Delivers a fully functional, user-driven gambling simulation system.
